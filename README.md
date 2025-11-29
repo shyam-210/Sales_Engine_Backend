@@ -11,10 +11,10 @@
 
 ## Live Demo
 
-**Demo URL**: [Add your hosted demo link here]
+**Demo URL**: [Home Page](https://sales-intelligence-engine.onrender.com/static/index.html)
 
 **Dashboard Access**:
-- URL: `/static/agent_widget.html`
+- URL: [Agent Dashboard](https://sales-intelligence-engine.onrender.com/static/agent_widget.html)
 - Password: `sales2025`
 
 ---
@@ -325,17 +325,18 @@ Sales_Engine_Backend/
 
 **Team Defaulters**
 
-### Shyam
+### Shyam J
 - **Email**: [shyamjk10@gmail.com](mailto:shyamjk10@gmail.com)
-- **GitHub**: [Add GitHub Link]
-- **LeetCode**: [Add LeetCode Profile Link]
-- **Portfolio**: [Add Portfolio Link]
+- **GitHub**: [shyam-210](https://github.com/shyam-210/)
+- **LeetCode**: [shyam__026](https://leetcode.com/u/shyam__026/)
+- **Portfolio**: [shyam-port.vercel.app](https://shyam-port.vercel.app/)
+- **LinkedIn**: [shyamjk10](https://www.linkedin.com/in/shyamjk10/)
 
-### Madhan
+### Madhanrao CS
 - **Email**: [maddymadhan9310@gmail.com](mailto:maddymadhan9310@gmail.com)
-- **GitHub**: [Add GitHub Link]
-- **LeetCode**: [Add LeetCode Profile Link]
-- **Portfolio**: [Add Portfolio Link]
+- **GitHub**: [crazymaddy45](https://github.com/crazymaddy45)
+- **LeetCode**: [Madhanrao](https://leetcode.com/u/Madhanrao/)
+- **LinkedIn**: [maddymadhan](https://www.linkedin.com/in/maddymadhan/)
 
 ---
 
