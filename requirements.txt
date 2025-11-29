@@ -1,0 +1,21 @@
+# Sales Intelligence Engine - Python Dependencies
+
+# Core Framework
+fastapi==0.109.0
+uvicorn[standard]==0.27.0
+python-dotenv==1.0.0
+pydantic==2.5.3
+pydantic-settings==2.1.0
+
+# AI / LLM
+groq==0.4.1
+
+# Database
+motor==3.3.2
+pymongo==4.6.1
+
+# HTTP Client (for Zoho CRM API)
+httpx==0.26.0
+
+# Utilities
+python-multipart==0.0.6

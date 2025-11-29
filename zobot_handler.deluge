@@ -1,0 +1,152 @@
+// Sales Intelligence Engine v2.0 - With Post-Qualification Handling
+BACKEND_URL = "https://dfe426c43ea1.ngrok-free.app";
+SECRET = "shyam@zoho2005";
+
+// Get message
+msgText = message.get("text");
+
+// CONFIGURATION: Set your Zoho SalesIQ Portal Name (Screen Name) here
+// You can find this in Settings > Portal Settings > Screen Name
+portalName = "Shyam10"; 
+
+// 1. Try to get persistent IDs from session first
+visitorID = zoho.salesiq.visitorsession.get(portalName, "persistent_visitor_id");
+sessionID = zoho.salesiq.visitorsession.get(portalName, "persistent_session_id");
+
+// SANITY CHECK: If SalesIQ returns an error object, treat as null
+if(visitorID != null && visitorID.toString().contains("error")) { visitorID = null; }
+if(sessionID != null && sessionID.toString().contains("error")) { sessionID = null; }
+
+// 2. If persistence failed, try to find a STABLE identifier from the visitor object
+// This prevents the "new session every message" loop if storage is broken
+if(visitorID == null) {
+    // Priority 1: Email (Very stable)
+    visitorID = visitor.get("email");
+    
+    // Priority 2: Name (Stable for this chat)
+    if(visitorID == null) {
+        name = visitor.get("name");
+        if(name != null && name != "Visitor") {
+            visitorID = "vis_" + name.replaceAll(" ", "_");
+        }
+    }
+    
+    // Priority 3: System ID (Check for error again)
+    if(visitorID == null) {
+        sysID = visitor.get("id");
+        if(sysID != null && !sysID.toString().contains("error")) {
+            visitorID = sysID;
+        }
+    }
+    
+    // Priority 4: Timestamp (Last resort - will cause looping if persistence fails)
+    if(visitorID == null) {
+        visitorID = "visitor_" + zoho.currenttime.toLong();
+    }
+    
+    // Try to save for future
+    try {
+        sessionData = Map();
+        sessionData.put("persistent_visitor_id", visitorID + "");
+        zoho.salesiq.visitorsession.set(portalName, sessionData);
+    } catch(e) {}
+}
+
+if(sessionID == null) {
+    // For session ID, we can link it to the visitor ID if we don't have a better one
+    // This ensures that at least the conversation stays together
+    sessionID = "sess_" + visitorID;
+    
+    try {
+        sessionData = Map();
+        sessionData.put("persistent_session_id", sessionID + "");
+        zoho.salesiq.visitorsession.set(portalName, sessionData);
+    } catch(e) {}
+}
+
+// Default response
+resultText = "Hello! How can I help you today?";
+
+// Ensure msgText is not null
+if(msgText == null) {
+    msgText = "";
+}
+
+try {
+    // Build JSON payload manually to ensure correct format
+    // Escape special characters in message
+    safeMsg = msgText.replaceAll("\\", "\\\\").replaceAll("\"", "\\\"");
+    
+    jsonPayload = "{\"visitor_id\":\"" + visitorID + "\",\"session_id\":\"" + sessionID + "\",\"message\":\"" + safeMsg + "\"}";
+    
+    extractResponse = invokeurl [
+        url: BACKEND_URL + "/api/v1/extract"
+        type: POST
+        parameters: jsonPayload
+        headers: {
+            "x-salesiq-auth": SECRET,
+            "Content-Type": "application/json"
+        }
+    ];
+    
+    alreadyQualified = extractResponse.get("already_qualified");
+    readyToQualify = extractResponse.get("ready_to_qualify");
+    
+    // Check if already qualified - STILL use conversational AI!
+    if(alreadyQualified == true) {
+        // POST-QUALIFICATION: Let conversational AI handle it naturally
+        // The backend conversation manager will generate appropriate responses
+        nextQuestion = extractResponse.get("next_question");
+        if(nextQuestion != null && nextQuestion != "") {
+            resultText = nextQuestion;
+        } else {
+            // Fallback only if backend returns nothing
+            resultText = "Our team has all your details and will reach out soon! Anything else you'd like to know about our solutions?";
+        }
+    } else if(readyToQualify == true) {
+        // QUALIFY THE LEAD (only once!)
+        // Manual JSON construction
+        qualifyPayload = "{\"visitor_id\":\"" + visitorID + "\",\"session_id\":\"" + sessionID + "\"}";
+        
+        qualifyResponse = invokeurl [
+            url: BACKEND_URL + "/api/v1/qualify"
+            type: POST
+            parameters: qualifyPayload
+            headers: {
+                "x-salesiq-auth": SECRET,
+                "Content-Type": "application/json"
+            }
+        ];
+        
+        score = qualifyResponse.get("score");
+        category = qualifyResponse.get("category");
+        
+        // Customer response based on category
+        if(category.equals("Hot")) {
+            resultText = "Thank you! You're a perfect fit. Our senior team will contact you within minutes with pricing and next steps!";
+        } else if(category.equals("Warm")) {
+            resultText = "Thanks! Would you like to see a demo or discuss pricing? Our team will reach out shortly!";
+        } else {
+            resultText = "Thanks for your interest! Our team will be in touch soon. What else would you like to know?";
+        }
+        
+    } else {
+        // PRE-QUALIFICATION: Continue progressive extraction  
+        nextQuestion = extractResponse.get("next_question");
+        if(nextQuestion != null && nextQuestion != "") {
+            resultText = nextQuestion;
+        } else {
+            resultText = "Tell me more!";
+        }
+    }
+    
+} catch(e) {
+    resultText = "Let me connect you with a human agent.";
+}
+
+// Return response in SalesIQ format
+response = Map();
+response.put("action", "reply");
+response.put("replies", [resultText]);
+
+return response;
