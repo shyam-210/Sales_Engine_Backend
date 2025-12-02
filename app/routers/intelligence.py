@@ -326,7 +326,7 @@ async def qualify_lead(
                 )
                 
                 # Send Cliq alert for high-priority leads
-                if lead_score.score >= 70:
+                if lead_score.score >= 50:
                     from app.services.cliq_service import send_cliq_alert
                     
                     is_returning = session_doc.get("visit_count", 1) > 1
