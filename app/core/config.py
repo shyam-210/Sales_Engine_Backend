@@ -38,7 +38,10 @@ class Settings(BaseSettings):
     # Zoho CRM OAuth Configuration (for automatic token refresh)
     zoho_crm_client_id: str = Field(default="", env="ZOHO_CRM_CLIENT_ID")
     zoho_crm_client_secret: str = Field(default="", env="ZOHO_CRM_CLIENT_SECRET")
-    zoho_crm_refresh_token: str = Field(default="", env="ZOHO_CRM_REFRESH_TOKEN")
+    zoho_crm_refresh_token: str = Field(default="", env="ZOHO_CRM_REFRESH_TOKEN")    
+    # Zoho Cliq Configuration
+    cliq_webhook_token: Optional[str] = Field(default=None, env="CLIQ_WEBHOOK_TOKEN")
+    cliq_bot_name: Optional[str] = Field(default=None, env="CLIQ_BOT_NAME")
     
     # Twilio SMS/OTP Configuration
     twilio_account_sid: str = Field(default="", env="TWILIO_ACCOUNT_SID")

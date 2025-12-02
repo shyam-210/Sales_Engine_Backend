@@ -324,6 +324,31 @@ async def qualify_lead(
                         }
                     }
                 )
+                
+                # Send Cliq alert for high-priority leads
+                if lead_score.score >= 70:
+                    from app.services.cliq_service import send_cliq_alert
+                    
+                    is_returning = session_doc.get("visit_count", 1) > 1
+                    visit_count = session_doc.get("visit_count", 1)
+                    
+                    await send_cliq_alert(
+                        visitor_name=session.extracted_data.get("visitor_name"),
+                        visitor_email=session.extracted_data.get("visitor_email"),
+                        visitor_company=session.extracted_data.get("company"),
+                        intent=analysis.intent,
+                        sentiment=analysis.sentiment,
+                        urgency="High" if lead_score.score >= 80 else "Medium",
+                        budget_signal=analysis.budget_signal,
+                        product_interest=session_doc.get("product_interest", "Not specified"),
+                        lead_score=lead_score.score,
+                        pain_points=analysis.pain_points,
+                        recommended_action=analysis.recommended_action,
+                        settings=settings,
+                        is_returning=is_returning,
+                        visit_count=visit_count
+                    )
+                
             else:
                 crm_sync_error = "CRM returned no Lead ID"
                 logger.warning(f"CRM sync returned no Lead ID for {request.visitor_id}")
