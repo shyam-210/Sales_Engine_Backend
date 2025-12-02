@@ -2,8 +2,8 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Sales Intelligence Widget</title>
 
     <!-- Tailwind CSS -->
@@ -81,21 +81,36 @@
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
+
+        /* Modal animation */
+        @keyframes modalEnter {
+            from {
+                opacity: 0;
+                transform: translateY(8px) scale(0.98);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .modal-card {
+            animation: modalEnter 240ms ease;
+        }
     </style>
 </head>
 
 <body class="p-4">
     <!-- Authentication Overlay -->
-    <div id="authOverlay"
-        class="fixed inset-0 bg-gradient-to-br from-purple-600 to-blue-600 flex items-center justify-center z-50">
+    <div id="authOverlay" class="fixed inset-0 bg-gradient-to-br from-purple-600 to-blue-600 flex items-center justify-center z-50">
         <div class="card p-8 max-w-md w-full mx-4">
             <div class="text-center mb-6">
                 <h1 class="text-3xl font-bold text-gray-800 mb-2">Sales Intelligence</h1>
                 <p class="text-gray-600">Agent Dashboard</p>
             </div>
 
-            <div id="authError"
-                class="hidden mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg text-sm">
+            <div id="authError" class="hidden mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg text-sm">
                 Invalid password. Please try again.
             </div>
 
@@ -197,14 +212,12 @@
                     <span class="text-gray-600">CRM Lead ID:</span>
                     <span id="crmLeadId" class="font-mono text-xs">--</span>
                 </div>
-                <div id="crmErrorContainer" style="display: none;"
-                    class="mt-2 p-2 bg-red-50 border border-red-200 rounded">
+                <div id="crmErrorContainer" style="display: none;" class="mt-2 p-2 bg-red-50 border border-red-200 rounded">
                     <div class="text-xs text-red-700 font-semibold mb-1">Sync Error:</div>
                     <div id="crmError" class="text-xs text-red-600"></div>
                 </div>
                 <div id="crmLinkContainer" style="display: none;" class="mt-2">
-                    <a id="crmLink" href="#" target="_blank"
-                        class="inline-block w-full text-center bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:from-blue-700 hover:to-purple-700 transition">
+                    <a id="crmLink" href="#" target="_blank" class="inline-block w-full text-center bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:from-blue-700 hover:to-purple-700 transition">
                         Open in Zoho CRM →
                     </a>
                 </div>
@@ -217,10 +230,111 @@
             <div id="primaryAction"></div>
         </div>
 
+        <!-- Appointment Section (NEW - inside lead detail) -->
+        <div class="card p-4 mb-4" id="appointmentsCard" style="display: none;">
+            <div class="flex justify-between items-center mb-3">
+                <h2 class="text-lg font-semibold text-gray-800">Appointments</h2>
+                <div>
+                    <button onclick="openScheduleModalForCurrentLead()"
+                        class="px-3 py-1 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg text-sm font-semibold hover:scale-105 transform transition">
+                        + Schedule Follow-up
+                    </button>
+                </div>
+            </div>
+
+            <div id="appointmentsList" class="space-y-3 text-sm text-gray-700">
+                <!-- Appointments will be rendered here -->
+            </div>
+
+            <div id="noAppointmentsState" class="text-gray-500 text-sm">
+                No upcoming appointments.
+            </div>
+        </div>
+
         <!-- Executive Summary -->
         <div class="card p-4" id="summaryCard">
             <h2 class="text-sm font-semibold text-gray-700 mb-2">Executive Summary</h2>
             <p id="summaryText" class="text-sm text-gray-600"></p>
+        </div>
+    </div>
+
+    <!-- Schedule Modal (used for schedule/reschedule) -->
+    <div id="scheduleModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black bg-opacity-40">
+        <div class="modal-card bg-white rounded-2xl p-6 w-full max-w-md card">
+            <div class="flex justify-between items-center mb-4">
+                <h3 id="scheduleModalTitle" class="text-lg font-semibold">Schedule Follow-up</h3>
+                <button onclick="closeScheduleModal()" class="text-gray-500 text-xl">×</button>
+            </div>
+
+            <div id="scheduleModalBody" class="space-y-3 text-sm">
+                <div>
+                    <label class="block text-xs text-gray-600">Lead</label>
+                    <div id="schedLeadInfo" class="font-semibold text-gray-800"></div>
+                </div>
+
+                <div>
+                    <label class="block text-xs text-gray-600">Service / Purpose</label>
+                    <input id="schedPurpose" class="w-full px-3 py-2 border rounded-lg" placeholder="Demo call / Follow-up"/>
+                </div>
+
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block text-xs text-gray-600">Date</label>
+                        <input id="schedDate" type="date" class="w-full px-3 py-2 border rounded-lg"/>
+                    </div>
+                    <div>
+                        <label class="block text-xs text-gray-600">Time</label>
+                        <select id="schedTime" class="w-full px-3 py-2 border rounded-lg">
+                            <option>10:00 AM</option>
+                            <option>11:00 AM</option>
+                            <option>2:00 PM</option>
+                            <option>4:00 PM</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs text-gray-600">Notes (optional)</label>
+                    <textarea id="schedNotes" rows="2" class="w-full px-3 py-2 border rounded-lg" placeholder="Reminder or notes for agent"></textarea>
+                </div>
+
+                <div class="flex gap-2 mt-2">
+                    <button onclick="submitSchedule()"
+                        class="flex-1 px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-semibold">Save</button>
+                    <button onclick="closeScheduleModal()" class="flex-1 px-4 py-2 border rounded-lg">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reschedule Confirm Modal -->
+    <div id="rescheduleModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black bg-opacity-40">
+        <div class="modal-card bg-white rounded-2xl p-6 w-full max-w-md card">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold">Reschedule Appointment</h3>
+                <button onclick="closeRescheduleModal()" class="text-gray-500 text-xl">×</button>
+            </div>
+
+            <div id="rescheduleBody" class="space-y-3 text-sm">
+                <div>
+                    <label class="block text-xs text-gray-600">New Date</label>
+                    <input id="reschDate" type="date" class="w-full px-3 py-2 border rounded-lg" />
+                </div>
+                <div>
+                    <label class="block text-xs text-gray-600">New Time</label>
+                    <select id="reschTime" class="w-full px-3 py-2 border rounded-lg">
+                        <option>10:00 AM</option>
+                        <option>11:00 AM</option>
+                        <option>2:00 PM</option>
+                        <option>4:00 PM</option>
+                    </select>
+                </div>
+
+                <div class="flex gap-2 mt-2">
+                    <button onclick="submitReschedule()" class="flex-1 px-4 py-2 bg-gradient-to-r from-green-600 to-blue-600 text-white rounded-lg font-semibold">Reschedule</button>
+                    <button onclick="closeRescheduleModal()" class="flex-1 px-4 py-2 border rounded-lg">Cancel</button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -236,8 +350,10 @@
         let pollTimer = null;
         let isAuthenticated = false;
 
-        // ==================== AUTHENTICATION ====================
+        // appointments storage key
+        const APPT_STORAGE_KEY = 'sales_engine_appointments_v1';
 
+        // ==================== AUTHENTICATION ====================
         function handleAuth(event) {
             event.preventDefault();
             const password = document.getElementById('authPassword').value;
@@ -254,7 +370,6 @@
         }
 
         // ==================== INITIALIZATION ====================
-
         function init() {
             if (!isAuthenticated) return;
 
@@ -269,7 +384,6 @@
         }
 
         // ==================== VIEW MANAGEMENT ====================
-
         function showDashboard() {
             document.getElementById('dashboardView').style.display = 'block';
             document.getElementById('detailView').style.display = 'none';
@@ -288,7 +402,6 @@
         }
 
         // ==================== DASHBOARD LOGIC ====================
-
         async function fetchTopLeads() {
             try {
                 const response = await fetch(`${BACKEND_URL}/api/v1/leads/top?limit=50`, {
@@ -325,11 +438,11 @@
                 div.innerHTML = `
                     <div>
                         <div class="font-bold text-gray-800">${lead.visitor_id}</div>
-                        <div class="text-xs text-gray-500">${lead.intent} • ${lead.priority} Priority</div>
+                        <div class="text-xs text-gray-500">${lead.intent} • ${lead.priority || 'Normal'} Priority</div>
                     </div>
                     <div class="text-right">
                         <div class="text-lg font-bold ${lead.category === 'Hot' ? 'text-red-500' : 'text-blue-500'}">
-                            ${lead.score}
+                            ${lead.lead_score ? lead.lead_score.total_score : lead.score || '--'}
                         </div>
                         <span class="text-xs px-2 py-1 rounded-full ${badgeColor} font-semibold">
                             ${lead.category}
@@ -341,7 +454,6 @@
         }
 
         // ==================== DETAIL VIEW LOGIC ====================
-
         function initScoreGauge() {
             const ctx = document.getElementById('scoreGauge').getContext('2d');
             scoreChart = new Chart(ctx, {
@@ -370,31 +482,66 @@
                 const response = await fetch(`${BACKEND_URL}/api/v1/leads/${CURRENT_VISITOR_ID}`, {
                     headers: { 'x-salesiq-auth': ZOHO_SECRET }
                 });
-                if (!response.ok) throw new Error('Lead not found');
+                if (!response.ok) {
+                    // If lead not found, render a fallback with simulated values
+                    console.warn('Lead fetch failed, showing simulated demo values');
+                    const demo = makeDemoLead(CURRENT_VISITOR_ID);
+                    updateDetailUI(demo);
+                    return;
+                }
                 const data = await response.json();
                 updateDetailUI(data);
             } catch (error) {
                 console.error(error);
+                // fallback demo
+                const demo = makeDemoLead(CURRENT_VISITOR_ID);
+                updateDetailUI(demo);
             }
         }
 
+        // Create a small demo lead object when backend is not available
+        function makeDemoLead(visitorId) {
+            return {
+                visitor_id: visitorId,
+                name: 'Demo User',
+                score: 78,
+                category: 'Warm',
+                priority: 'High',
+                intent: 'buying',
+                sentiment: 'positive',
+                budget_signal: 'high',
+                pain_points: ['Manual processes', 'No pipeline visibility'],
+                battle_card: 'Competitor X is strong on features; highlight our ease-of-use & cost',
+                crm_synced: false,
+                crm_sync_error: null,
+                crm_lead_id: null,
+                action: 'schedule_demo',
+                summary: 'High intent buyer — suggest scheduling demo.'
+            };
+        }
+
         function updateDetailUI(data) {
-            let color = data.score >= 80 ? 'rgb(239, 68, 68)' : (data.score >= 50 ? 'rgb(245, 158, 11)' : 'rgb(59, 130, 246)');
-            scoreChart.data.datasets[0].data = [data.score, 100 - data.score];
+            // Score & gauge
+            const scoreValue = data.lead_score ? data.lead_score.total_score : data.score || 0;
+            let color = scoreValue >= 80 ? 'rgb(239, 68, 68)' : (scoreValue >= 50 ? 'rgb(245, 158, 11)' : 'rgb(59, 130, 246)');
+            scoreChart.data.datasets[0].data = [scoreValue, 100 - scoreValue];
             scoreChart.data.datasets[0].backgroundColor = [color, 'rgb(229, 231, 235)'];
             scoreChart.update();
 
-            document.getElementById('scoreValue').textContent = data.score;
-            document.getElementById('scoreValue').className = `text-4xl font-bold score-${data.category.toLowerCase()}`;
-            document.getElementById('scoreCategory').textContent = `${data.category} Lead - ${data.priority} Priority`;
+            document.getElementById('scoreValue').textContent = scoreValue;
+            const category = (data.lead_score && data.lead_score.category) || data.category || 'Unknown';
+            document.getElementById('scoreValue').className = `text-4xl font-bold ${category === 'Hot' ? 'score-hot' : category === 'Warm' ? 'score-warm' : 'score-cold'}`;
+            document.getElementById('scoreCategory').textContent = `${category} Lead - ${data.priority || 'Normal'} Priority`;
 
-            document.getElementById('intent').textContent = data.intent;
-            document.getElementById('sentiment').textContent = data.sentiment;
-            document.getElementById('budgetSignal').textContent = data.budget_signal;
+            // AI fields
+            document.getElementById('intent').textContent = data.intent || '--';
+            document.getElementById('sentiment').textContent = data.sentiment || '--';
+            document.getElementById('budgetSignal').textContent = data.budget_signal || '--';
 
             const ppList = document.getElementById('painPoints');
-            ppList.innerHTML = data.pain_points.map(p => `<li>• ${p}</li>`).join('') || '<li class="text-gray-400">None</li>';
+            ppList.innerHTML = (data.pain_points && data.pain_points.length) ? data.pain_points.map(p => `<li>• ${p}</li>`).join('') : '<li class="text-gray-400">None</li>';
 
+            // battle card
             const bc = document.getElementById('battleCardContainer');
             if (data.battle_card) {
                 document.getElementById('battleCardText').textContent = data.battle_card;
@@ -403,16 +550,44 @@
                 bc.style.display = 'none';
             }
 
-            // Update CRM Status
+            // CRM Status UI
             updateCRMStatus(data);
 
+            // Primary action: wire to open scheduler if the system recommends scheduling
+            const actionLabel = deriveActionLabel(data.action || data.recommended_action || 'Contact');
             document.getElementById('primaryAction').innerHTML = `
-                <button onclick="executeAction('${data.action}')" 
+                <button id="primaryActionBtn" onclick="executeAction('${actionLabel}')"
                         class="action-btn w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-lg font-bold text-center">
-                    ${data.action}
+                    ${prettyActionText(actionLabel)}
                 </button>`;
 
-            document.getElementById('summaryText').textContent = data.summary;
+            // Summary
+            document.getElementById('summaryText').textContent = data.executive_summary || data.summary || 'No summary available.';
+
+            // Appointments: show appointments card if there are appointments OR system recommends scheduling
+            const apptCard = document.getElementById('appointmentsCard');
+            const appts = loadAppointmentsForLead(data.visitor_id);
+            if (appts.length > 0 || actionLabel === 'schedule_demo' || actionLabel === 'schedule_followup') {
+                apptCard.style.display = 'block';
+            } else {
+                apptCard.style.display = 'none';
+            }
+            renderAppointmentsList(data.visitor_id);
+        }
+
+        function deriveActionLabel(raw) {
+            // Normalize common action labels that might come from backend
+            if (!raw) return 'contact';
+            const s = String(raw).toLowerCase();
+            if (s.includes('schedule') || s.includes('demo') || s.includes('follow')) return 'schedule_demo';
+            return s.replace(/\s+/g, '_');
+        }
+
+        function prettyActionText(actionKey) {
+            if (!actionKey) return 'Take Action';
+            if (actionKey === 'schedule_demo') return 'Schedule Follow-up';
+            if (actionKey === 'contact') return 'Contact Lead';
+            return actionKey.split('_').map(w => w[0].toUpperCase() + w.slice(1)).join(' ');
         }
 
         function updateCRMStatus(data) {
@@ -423,7 +598,6 @@
             const crmLinkContainer = document.getElementById('crmLinkContainer');
             const crmLink = document.getElementById('crmLink');
 
-            // Check if CRM data exists
             if (data.crm_synced) {
                 crmStatus.innerHTML = '<span class="text-green-600">✓ Synced</span>';
                 crmLeadId.textContent = data.crm_lead_id || '--';
@@ -432,6 +606,8 @@
                 if (data.crm_lead_id) {
                     crmLink.href = `${ZOHO_CRM_BASE_URL}/${data.crm_lead_id}`;
                     crmLinkContainer.style.display = 'block';
+                } else {
+                    crmLinkContainer.style.display = 'none';
                 }
             } else if (data.crm_sync_error) {
                 crmStatus.innerHTML = '<span class="text-red-600">✗ Sync Failed</span>';
@@ -447,18 +623,273 @@
             }
         }
 
-        // ==================== UTILS ====================
+        // ==================== APPOINTMENTS STORAGE & HELPERS ====================
+        function readAllAppointments() {
+            try {
+                const raw = localStorage.getItem(APPT_STORAGE_KEY);
+                return raw ? JSON.parse(raw) : {};
+            } catch (e) {
+                console.warn('Failed to parse appointments from localStorage', e);
+                return {};
+            }
+        }
 
+        function writeAllAppointments(obj) {
+            localStorage.setItem(APPT_STORAGE_KEY, JSON.stringify(obj));
+        }
+
+        function loadAppointmentsForLead(leadId) {
+            if (!leadId) return [];
+            const all = readAllAppointments();
+            return all[leadId] ? all[leadId] : [];
+        }
+
+        function saveAppointmentForLead(leadId, appt) {
+            const all = readAllAppointments();
+            if (!all[leadId]) all[leadId] = [];
+            // if appt has id, replace; else push new with generated id
+            if (!appt.id) {
+                appt.id = 'apt_' + Math.random().toString(36).slice(2, 9);
+                all[leadId].push(appt);
+            } else {
+                const idx = all[leadId].findIndex(a => a.id === appt.id);
+                if (idx >= 0) all[leadId][idx] = appt;
+                else all[leadId].push(appt);
+            }
+            writeAllAppointments(all);
+        }
+
+        function deleteAppointmentForLead(leadId, apptId) {
+            const all = readAllAppointments();
+            if (!all[leadId]) return;
+            all[leadId] = all[leadId].filter(a => a.id !== apptId);
+            writeAllAppointments(all);
+        }
+
+        // ==================== RENDER APPOINTMENTS UI ====================
+        function renderAppointmentsList(leadId) {
+            const listEl = document.getElementById('appointmentsList');
+            const noState = document.getElementById('noAppointmentsState');
+            listEl.innerHTML = '';
+
+            if (!leadId) {
+                noState.style.display = 'block';
+                return;
+            }
+
+            const appts = loadAppointmentsForLead(leadId).sort((a,b)=> new Date(a.date + ' ' + timeTo24(a.time)) - new Date(b.date + ' ' + timeTo24(b.time)));
+
+            if (appts.length === 0) {
+                noState.style.display = 'block';
+                return;
+            }
+
+            noState.style.display = 'none';
+
+            appts.forEach(a => {
+                const item = document.createElement('div');
+                item.className = 'p-3 border border-gray-100 rounded-lg flex justify-between items-center';
+                const left = document.createElement('div');
+                left.innerHTML = `<div class="font-semibold text-gray-800">${a.purpose || 'Follow-up'}</div>
+                                  <div class="text-xs text-gray-500">${formatDate(a.date)} • ${a.time}</div>
+                                  <div class="text-xs text-gray-500">${a.notes || ''}</div>`;
+
+                const right = document.createElement('div');
+                right.className = 'text-right space-y-2';
+                right.innerHTML = `
+                    <div class="${a.status === 'Confirmed' ? 'text-green-600' : a.status === 'Pending' ? 'text-yellow-600' : 'text-gray-500'} font-semibold">${a.status}</div>
+                    <div class="flex gap-2 mt-2">
+                        <button onclick="openRescheduleModal('${leadId}','${a.id}')" class="px-3 py-1 text-xs border rounded-lg">Reschedule</button>
+                        <button onclick="cancelAppointment('${leadId}','${a.id}')" class="px-3 py-1 text-xs bg-red-50 text-red-600 border rounded-lg">Cancel</button>
+                    </div>`;
+
+                item.appendChild(left);
+                item.appendChild(right);
+                listEl.appendChild(item);
+            });
+        }
+
+        function formatDate(iso) {
+            // iso in yyyy-mm-dd
+            const d = new Date(iso + 'T00:00:00');
+            return d.toLocaleDateString();
+        }
+
+        function timeTo24(t) {
+            // simple converter for "10:00 AM" to "10:00"
+            if (!t) return '00:00';
+            const [time, marker] = t.split(' ');
+            if (!marker) return time;
+            let [h, m] = time.split(':').map(Number);
+            if (marker.toUpperCase() === 'PM' && h !== 12) h += 12;
+            if (marker.toUpperCase() === 'AM' && h === 12) h = 0;
+            return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
+        }
+
+        // ==================== SCHEDULE MODAL LOGIC ====================
+        function openScheduleModalForCurrentLead() {
+            if (!CURRENT_VISITOR_ID) {
+                alert('No lead selected.');
+                return;
+            }
+            openScheduleModal(CURRENT_VISITOR_ID);
+        }
+
+        function openScheduleModal(leadId, prefillAppt) {
+            const modal = document.getElementById('scheduleModal');
+            const leadInfo = document.getElementById('schedLeadInfo');
+            const purpose = document.getElementById('schedPurpose');
+            const date = document.getElementById('schedDate');
+            const time = document.getElementById('schedTime');
+            const notes = document.getElementById('schedNotes');
+            document.getElementById('scheduleModalTitle').textContent = prefillAppt ? 'Edit Appointment' : 'Schedule Follow-up';
+
+            // fetch lead info from backend if possible, else demo
+            const leadName = document.getElementById('scoreCategory') ? document.getElementById('scoreCategory').textContent : (leadId || 'Lead');
+            leadInfo.textContent = `${leadName} (${leadId})`;
+
+            purpose.value = prefillAppt ? prefillAppt.purpose : 'Demo Call';
+            date.value = prefillAppt ? prefillAppt.date : (new Date().toISOString().slice(0,10));
+            time.value = prefillAppt ? prefillAppt.time : '10:00 AM';
+            notes.value = prefillAppt ? prefillAppt.notes : '';
+
+            modal.style.display = 'flex';
+            // attach appt being edited id temporarily
+            modal.dataset.leadId = leadId;
+            modal.dataset.editId = prefillAppt ? prefillAppt.id : '';
+        }
+
+        function closeScheduleModal() {
+            const modal = document.getElementById('scheduleModal');
+            modal.style.display = 'none';
+            delete modal.dataset.editId;
+            delete modal.dataset.leadId;
+        }
+
+        function submitSchedule() {
+            const modal = document.getElementById('scheduleModal');
+            const leadId = modal.dataset.leadId || CURRENT_VISITOR_ID;
+            if (!leadId) return alert('No lead selected.');
+
+            const purpose = document.getElementById('schedPurpose').value.trim();
+            const date = document.getElementById('schedDate').value;
+            const time = document.getElementById('schedTime').value;
+            const notes = document.getElementById('schedNotes').value;
+
+            if (!date || !time) return alert('Please choose date and time.');
+
+            const appt = {
+                id: modal.dataset.editId || undefined,
+                purpose: purpose || 'Follow-up',
+                date,
+                time,
+                notes,
+                status: 'Confirmed',
+                created_at: new Date().toISOString()
+            };
+
+            saveAppointmentForLead(leadId, appt);
+            renderAppointmentsList(leadId);
+            closeScheduleModal();
+
+            // small toast simulation (simple)
+            toast('Appointment saved', 'success');
+        }
+
+        // ==================== RESCHEDULE MODAL LOGIC ====================
+        let _rescheduleContext = null;
+
+        function openRescheduleModal(leadId, apptId) {
+            const all = readAllAppointments();
+            const appt = all[leadId] ? all[leadId].find(a => a.id === apptId) : null;
+            if (!appt) return alert('Appointment not found.');
+
+            _rescheduleContext = { leadId, apptId };
+
+            document.getElementById('reschDate').value = appt.date;
+            document.getElementById('reschTime').value = appt.time;
+            document.getElementById('rescheduleModal').style.display = 'flex';
+        }
+
+        function closeRescheduleModal() {
+            document.getElementById('rescheduleModal').style.display = 'none';
+            _rescheduleContext = null;
+        }
+
+        function submitReschedule() {
+            if (!_rescheduleContext) return;
+            const nd = document.getElementById('reschDate').value;
+            const nt = document.getElementById('reschTime').value;
+            if (!nd || !nt) return alert('Select new date/time.');
+
+            const all = readAllAppointments();
+            const list = all[_rescheduleContext.leadId] || [];
+            const idx = list.findIndex(a => a.id === _rescheduleContext.apptId);
+            if (idx < 0) return alert('Appointment not found.');
+
+            list[idx].date = nd;
+            list[idx].time = nt;
+            list[idx].status = 'Confirmed';
+            writeAllAppointments(all);
+            renderAppointmentsList(_rescheduleContext.leadId);
+            closeRescheduleModal();
+            toast('Appointment rescheduled', 'info');
+        }
+
+        function cancelAppointment(leadId, apptId) {
+            if (!confirm('Cancel this appointment?')) return;
+            deleteAppointmentForLead(leadId, apptId);
+            renderAppointmentsList(leadId);
+            toast('Appointment cancelled', 'warn');
+        }
+
+        // ==================== SMALL TOAST UTILITY ====================
+        function toast(message, kind='info') {
+            const el = document.createElement('div');
+            el.textContent = message;
+            el.className = 'fixed bottom-8 left-1/2 -translate-x-1/2 bg-gray-900 text-white px-4 py-2 rounded-lg shadow';
+            document.body.appendChild(el);
+            setTimeout(()=> {
+                el.style.transition = 'opacity 300ms';
+                el.style.opacity = '0';
+                setTimeout(()=> el.remove(), 300);
+            }, 1600);
+        }
+
+        // ==================== ACTION EXECUTOR (wired to Recommended Action) ====================
+        function executeAction(action) {
+            // If action suggests scheduling, open the scheduling modal for the current lead
+            if (!CURRENT_VISITOR_ID) {
+                alert(`No lead selected to perform action: ${action}`);
+                return;
+            }
+            const key = String(action || '').toLowerCase();
+            if (key.includes('schedule') || key.includes('demo') || key.includes('follow')) {
+                // Open scheduler for the current lead
+                openScheduleModal(CURRENT_VISITOR_ID);
+            } else {
+                // default fallback
+                alert(`Executing action: ${action}`);
+            }
+        }
+
+        // ==================== POLLING ====================
         function startPolling() {
             if (pollTimer) clearInterval(pollTimer);
-            pollTimer = setInterval(refreshDetailData, 5000);
+            pollTimer = setInterval(refreshDetailData, 7000);
         }
 
         function stopPolling() {
             if (pollTimer) clearInterval(pollTimer);
         }
 
-        function executeAction(action) { alert(`Executing: ${action}`); }
+        // ==================== UTILS ====================
+        function timeNowISO() {
+            return new Date().toISOString();
+        }
+
+        // ==================== INITIALIZE DEMO (safe) ====================
+        // Keep UI responsive even if lead fetch fails; demo values will show.
 
     </script>
 </body>

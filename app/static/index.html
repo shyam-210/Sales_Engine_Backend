@@ -1,324 +1,458 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sales Intelligence Engine - AI-Powered Lead Qualification</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Sales Intelligence Engine — AI-Powered Lead Qualification & Follow-up Automation</title>
 
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
 
-    <style>
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-        }
+  <style>
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+    }
+    .card {
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(10px);
+      border-radius: 16px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+    }
+    .feature-card { transition: all 0.3s ease; cursor: pointer; }
+    .feature-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.15); }
+    .gradient-text {
+      background: linear-gradient(135deg,#667eea 0%,#764ba2 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .pulse-dot { animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.5} }
 
-        .card {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 16px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-        }
+    /* Modal animation */
+    @keyframes modalEnter {
+      from { opacity: 0; transform: translateY(8px) scale(.98); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .modal-card { animation: modalEnter 220ms ease; }
 
-        .feature-card {
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
-        }
-
-        .gradient-text {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .pulse-dot {
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-
-            0%,
-            100% {
-                opacity: 1;
-            }
-
-            50% {
-                opacity: 0.5;
-            }
-        }
-    </style>
+    /* small utility for step highlight inside modal */
+    .step-active { color: #6d28d9; font-weight: 600; }
+  </style>
 </head>
 
 <body class="p-4">
-    <div class="max-w-6xl mx-auto">
-        <div class="card p-8 mb-6">
-            <div class="text-center mb-8">
-                <h1 class="text-5xl font-bold gradient-text mb-4">Sales Intelligence Engine</h1>
-                <p class="text-xl text-gray-600">AI-Powered Conversational Lead Qualification System</p>
-                <div class="flex items-center justify-center mt-4 text-sm text-gray-500">
-                    <span class="pulse-dot inline-block w-3 h-3 bg-green-500 rounded-full mr-2"></span>
-                    <span>Live Demo • Real-time AI Analysis • Automatic CRM Sync</span>
-                </div>
-            </div>
+  <div class="max-w-6xl mx-auto">
+    <div class="card p-8 mb-6">
+      <div class="text-center mb-8">
+        <h1 class="text-4xl md:text-5xl font-bold gradient-text mb-4">Sales Intelligence Engine</h1>
+        <p class="text-lg md:text-xl text-gray-700">AI-Powered Lead Qualification and Follow-up Automation</p>
+        <div class="flex items-center justify-center mt-3 text-sm text-gray-500">
+          <span class="inline-block w-2.5 h-2.5 bg-green-500 rounded-full mr-2"></span>
+          <span>Live demonstration • Real-time AI analysis • CRM integration</span>
+        </div>
+      </div>
 
-            <!-- Project Overview -->
-            <div class="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-6 mb-6">
-                <h2 class="text-2xl font-bold text-gray-800 mb-3">Project Overview</h2>
-                <p class="text-gray-700 leading-relaxed">
-                    This is a <strong>demonstration project</strong> showcasing an intelligent sales assistant that
-                    naturally converses with visitors, understands their intent, and automatically qualifies leads.
-                    The system is specifically configured to handle inquiries about <strong>CRM</strong>,
-                    <strong>ERP</strong>, and <strong>SalesIQ Chatbot</strong> solutions.
-                </p>
-            </div>
+      <!-- Project Overview -->
+      <div class="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-6 mb-6">
+        <h2 class="text-2xl font-semibold text-gray-800 mb-3">Project Overview</h2>
+        <p class="text-gray-700 leading-relaxed">
+          Sales Intelligence Engine is an integrated platform that combines conversational AI, contextual lead
+          qualification, and follow-up automation. The system identifies high-value prospects, synchronizes
+          qualified leads to the CRM, and supports agent workflows for scheduling and managing follow-up sessions.
+        </p>
+      </div>
 
-            <!-- Key Features Grid -->
-            <div class="grid md:grid-cols-3 gap-4 mb-6">
-                <div class="feature-card bg-white p-5 rounded-lg border-2 border-blue-100">
-                    <h3 class="font-bold text-gray-800 mb-2">Conversational AI</h3>
-                    <p class="text-sm text-gray-600">Natural dialogue flow with intent detection and context-aware
-                        responses</p>
-                </div>
-
-                <div class="feature-card bg-white p-5 rounded-lg border-2 border-purple-100">
-                    <h3 class="font-bold text-gray-800 mb-2">Smart Scoring</h3>
-                    <p class="text-sm text-gray-600">AI analyzes conversations and scores leads 0-100 (Hot/Warm/Cold)
-                    </p>
-                </div>
-
-                <div class="feature-card bg-white p-5 rounded-lg border-2 border-green-100">
-                    <h3 class="font-bold text-gray-800 mb-2">Auto CRM Sync</h3>
-                    <p class="text-sm text-gray-600">Qualified leads automatically sync to Zoho CRM in real-time</p>
-                </div>
-            </div>
-
-            <!-- How It Works -->
-            <div class="bg-white rounded-lg p-6 mb-6 border-2 border-gray-100">
-                <h2 class="text-2xl font-bold text-gray-800 mb-4">How It Works</h2>
-                <div class="space-y-3">
-                    <div class="flex items-start">
-                        <span
-                            class="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold mr-3 flex-shrink-0">1</span>
-                        <div><strong>Visitor Engages:</strong> Customer starts conversation via the chatbot below</div>
-                    </div>
-                    <div class="flex items-start">
-                        <span
-                            class="bg-purple-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold mr-3 flex-shrink-0">2</span>
-                        <div><strong>Intent Detection:</strong> AI understands if they're asking about CRM/ERP/SalesIQ
-                        </div>
-                    </div>
-                    <div class="flex items-start">
-                        <span
-                            class="bg-indigo-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold mr-3 flex-shrink-0">3</span>
-                        <div><strong>Natural Conversation:</strong> Bot collects info through engaging dialogue (not
-                            forms!)</div>
-                    </div>
-                    <div class="flex items-start">
-                        <span
-                            class="bg-pink-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold mr-3 flex-shrink-0">4</span>
-                        <div><strong>AI Analysis:</strong> ChatGPT OSS 120B scores intent, sentiment, urgency, and pain
-                            points</div>
-                    </div>
-                    <div class="flex items-start">
-                        <span
-                            class="bg-green-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold mr-3 flex-shrink-0">5</span>
-                        <div><strong>Auto Sync:</strong> Lead appears in Zoho CRM and Agent Dashboard instantly</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Product Scope -->
-            <div class="bg-yellow-50 border-2 border-yellow-200 rounded-lg p-5 mb-6">
-                <h3 class="font-bold text-gray-800 mb-2">Product Scope (Demo)</h3>
-                <p class="text-gray-700 mb-3">The bot is trained to handle inquiries about:</p>
-                <div class="flex flex-wrap gap-2">
-                    <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-semibold">✓ CRM
-                        Solutions</span>
-                    <span class="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm font-semibold">✓ ERP
-                        Systems</span>
-                    <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-semibold">✓ SalesIQ
-                        Chatbots</span>
-                </div>
-                <p class="text-sm text-gray-600 mt-3">
-                    <strong>Note:</strong> Queries about other products will be politely redirected to these offerings.
-                </p>
-            </div>
-
-            <!-- Technical Highlights -->
-            <div class="grid md:grid-cols-2 gap-4 mb-6">
-                <div class="bg-white rounded-lg p-5 border-2 border-gray-100">
-                    <h3 class="font-bold text-gray-800 mb-3">Technical Stack</h3>
-                    <ul class="text-sm text-gray-600 space-y-1">
-                        <li>• <strong>Backend:</strong> Python FastAPI</li>
-                        <li>• <strong>AI Engine:</strong> ChatGPT OSS 120B</li>
-                        <li>• <strong>Database:</strong> MongoDB</li>
-                        <li>• <strong>CRM:</strong> Zoho CRM (OAuth 2.0)</li>
-                        <li>• <strong>Chat:</strong> Zoho SalesIQ</li>
-                    </ul>
-                </div>
-
-                <div class="bg-white rounded-lg p-5 border-2 border-gray-100">
-                    <h3 class="font-bold text-gray-800 mb-3">Key Features</h3>
-                    <ul class="text-sm text-gray-600 space-y-1">
-                        <li>• Progressive lead qualification</li>
-                        <li>• Intent-first conversation flow</li>
-                        <li>• 30-min session timeout</li>
-                        <li>• Visit tracking & scoring</li>
-                        <li>• Real-time dashboard updates</li>
-                    </ul>
-                </div>
-            </div>
-
-            <!-- Agent Dashboard Access -->
-            <div class="bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg p-6 text-white mb-6">
-                <h2 class="text-2xl font-bold mb-3">Agent Dashboard Access</h2>
-                <p class="mb-4">
-                    View all qualified leads in real-time with AI analysis, scores, and recommended actions.
-                </p>
-                <div class="bg-white bg-opacity-20 rounded-lg p-4 mb-4">
-                    <div class="flex items-center justify-between mb-3">
-                        <span class="font-semibold">Dashboard URL:</span>
-                        <a href="/static/agent_widget.html" target="_blank"
-                            class="bg-white text-purple-600 px-4 py-2 rounded-lg font-bold hover:bg-opacity-90 transition">
-                            Open Dashboard →
-                        </a>
-                    </div>
-                    <div class="flex items-center justify-between">
-                        <span class="font-semibold">Password:</span>
-                        <div class="flex items-center gap-2">
-                            <input type="password" id="dashboardPassword" value="sales2025" readonly
-                                class="bg-black bg-opacity-30 px-3 py-1 rounded text-white font-mono text-sm" />
-                            <button onclick="togglePassword()"
-                                class="bg-white bg-opacity-20 hover:bg-opacity-30 px-3 py-1 rounded transition text-sm">
-                                View
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <p class="text-sm opacity-90 bg-white bg-opacity-10 rounded p-3">
-                    <strong>Note:</strong> For demo purposes, the dashboard is kept open with a simple password.
-                    <strong>Tip:</strong> Open the dashboard in a new tab, then chat below to see leads appear in
-                    real-time!
-                </p>
-            </div>
-            <!-- GitHub Repository -->
-            <div class="bg-gradient-to-r from-gray-800 to-gray-900 rounded-lg p-6 text-white mb-6 text-center">
-                <h3 class="text-xl font-bold mb-3">View Source Code</h3>
-                <p class="mb-4 text-gray-300">
-                    Explore the complete implementation on GitHub
-                </p>
-                <a href="https://github.com/shyam-210/Sales_Engine_Backend" target="_blank" 
-                   class="inline-flex items-center gap-2 bg-white text-gray-900 px-6 py-3 rounded-lg font-bold hover:bg-gray-100 transition">
-                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-                    </svg>
-                    View on GitHub
-                </a>
-            </div>
-
-
-            <!-- CRM Integration Showcase -->
-            <div class="bg-gradient-to-r from-green-50 to-blue-50 rounded-lg p-6 mb-6 border-2 border-green-200">
-                <h2 class="text-2xl font-bold text-gray-800 mb-3">CRM Integration</h2>
-                <p class="text-gray-700 mb-4">
-                    All qualified leads automatically sync to <strong>Zoho CRM</strong> with full traceability.
-                </p>
-
-                <div class="grid md:grid-cols-2 gap-4 mb-4">
-                    <div class="bg-white rounded-lg p-4 border border-green-200">
-                        <h3 class="font-bold text-gray-800 mb-2">Auto-Sync Features</h3>
-                        <ul class="text-sm text-gray-700 space-y-1">
-                            <li>✓ Real-time lead creation in Zoho CRM</li>
-                            <li>✓ CRM Lead ID captured and stored</li>
-                            <li>✓ Sync status tracking (Success/Failed)</li>
-                            <li>✓ Error logging for debugging</li>
-                            <li>✓ OAuth 2.0 secure authentication</li>
-                        </ul>
-                    </div>
-
-                    <div class="bg-white rounded-lg p-4 border border-blue-200">
-                        <h3 class="font-bold text-gray-800 mb-2">Dashboard Visibility</h3>
-                        <ul class="text-sm text-gray-700 space-y-1">
-                            <li>✓ CRM sync status badge (Synced/Failed/Pending)</li>
-                            <li>✓ Zoho CRM Lead ID display</li>
-                            <li>✓ Direct link to open lead in CRM</li>
-                            <li>✓ Error messages for failed syncs</li>
-                            <li>✓ Sync timestamp tracking</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="bg-white bg-opacity-60 rounded p-3 text-sm text-gray-700">
-                    <strong>How it works:</strong> When a lead is qualified, the system captures the Zoho CRM response,
-                    stores the Lead ID in MongoDB, and displays the sync status in the dashboard. Agents can click
-                    "Open in Zoho CRM" to view the full lead record instantly.
-                </div>
-            </div>
-
-            <!-- Session Info -->
-            <div class="bg-blue-50 border-2 border-blue-200 rounded-lg p-4 mb-6">
-                <h3 class="font-bold text-gray-800 mb-2">Session Management</h3>
-                <p class="text-sm text-gray-700">
-                    Sessions automatically reset after <strong>30 minutes of inactivity</strong>. Each new visit
-                    is tracked separately, and returning visitors get a visit count bonus in their lead score.
-                </p>
-            </div>
-
-            <!-- Try It Now -->
-            <div class="text-center bg-gradient-to-r from-green-50 to-blue-50 rounded-lg p-6">
-                <h2 class="text-2xl font-bold text-gray-800 mb-3">Try It Now!</h2>
-                <p class="text-gray-700 mb-4">
-                    Start a conversation with the chatbot below. Try asking about CRM, ERP, or SalesIQ solutions!
-                </p>
-                <div class="flex flex-wrap justify-center gap-2 text-sm">
-                    <span class="bg-white px-3 py-1 rounded-full text-gray-700 border border-gray-300">
-                        "I need a CRM for my team"
-                    </span>
-                    <span class="bg-white px-3 py-1 rounded-full text-gray-700 border border-gray-300">
-                        "Looking for ERP solutions"
-                    </span>
-                    <span class="bg-white px-3 py-1 rounded-full text-gray-700 border border-gray-300">
-                        "Tell me about SalesIQ"
-                    </span>
-                </div>
-            </div>
+      <!-- Key Features Grid -->
+      <div class="grid md:grid-cols-3 gap-4 mb-6">
+        <div class="feature-card bg-white p-5 rounded-lg border-2 border-blue-100">
+          <h3 class="font-semibold text-gray-800 mb-2">Conversational AI</h3>
+          <p class="text-sm text-gray-600">Context-aware dialogue with intent detection and progressive data capture.</p>
         </div>
 
-        <!-- Footer -->
-        <div class="text-center text-white text-sm opacity-75 mb-4">
-            <p>Sales Intelligence Engine v2.0 • Built with FastAPI, ChatGPT OSS 120B & Zoho Integration</p>
+        <div class="feature-card bg-white p-5 rounded-lg border-2 border-purple-100">
+          <h3 class="font-semibold text-gray-800 mb-2">Lead Scoring</h3>
+          <p class="text-sm text-gray-600">Multi-factor scoring (intent, sentiment, budget signal) to classify leads.</p>
         </div>
+
+        <div class="feature-card bg-white p-5 rounded-lg border-2 border-green-100">
+          <h3 class="font-semibold text-gray-800 mb-2">CRM Integration</h3>
+          <p class="text-sm text-gray-600">Secure OAuth2 synchronization with Zoho CRM for traceability and follow-up.</p>
+        </div>
+      </div>
+
+      <!-- How It Works -->
+      <div class="bg-white rounded-lg p-6 mb-6 border-2 border-gray-100">
+        <h2 class="text-2xl font-semibold text-gray-800 mb-4">How It Works</h2>
+        <div class="space-y-3 text-gray-700">
+          <div class="flex items-start">
+            <span class="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold mr-3">1</span>
+            <div><strong>Visitor engagement:</strong> A website visitor initiates a conversation through the SalesIQ widget.</div>
+          </div>
+
+          <div class="flex items-start">
+            <span class="bg-indigo-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold mr-3">2</span>
+            <div><strong>AI analysis:</strong> The system extracts intent, sentiment, and signals from the interaction.</div>
+          </div>
+
+          <div class="flex items-start">
+            <span class="bg-purple-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold mr-3">3</span>
+            <div><strong>Qualification:</strong> Leads are scored and categorized (Hot/Warm/Cold) with recommended next actions.</div>
+          </div>
+
+          <div class="flex items-start">
+            <span class="bg-green-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold mr-3">4</span>
+            <div><strong>CRM sync:</strong> Qualified leads are synchronized to Zoho CRM with full traceability.</div>
+          </div>
+
+          <div class="flex items-start">
+            <span class="bg-pink-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold mr-3">5</span>
+            <div><strong>Follow-up automation:</strong> Agents can schedule and manage follow-up appointments directly from the agent dashboard.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Product Scope -->
+      <div class="bg-yellow-50 border-2 border-yellow-200 rounded-lg p-5 mb-6">
+        <h3 class="font-semibold text-gray-800 mb-2">Product Scope</h3>
+        <p class="text-gray-700 mb-3">This demonstration covers the following capabilities:</p>
+        <div class="flex flex-wrap gap-2">
+          <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-semibold">CRM lead capture</span>
+          <span class="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm font-semibold">AI lead scoring</span>
+          <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-semibold">Follow-up scheduling</span>
+        </div>
+      </div>
+
+      <!-- Technical Highlights -->
+      <div class="grid md:grid-cols-2 gap-4 mb-6">
+        <div class="bg-white rounded-lg p-5 border-2 border-gray-100">
+          <h3 class="font-semibold text-gray-800 mb-3">Technical Stack</h3>
+          <ul class="text-sm text-gray-600 space-y-1">
+            <li>• Backend: Python (FastAPI)</li>
+            <li>• AI Engine: ChatGPT OSS 120B</li>
+            <li>• Database: MongoDB</li>
+            <li>• CRM: Zoho CRM (OAuth 2.0)</li>
+            <li>• Chat: Zoho SalesIQ</li>
+          </ul>
+        </div>
+
+        <div class="bg-white rounded-lg p-5 border-2 border-gray-100">
+          <h3 class="font-semibold text-gray-800 mb-3">Key Features</h3>
+          <ul class="text-sm text-gray-600 space-y-1">
+            <li>• Progressive data collection and context preservation</li>
+            <li>• Multi-dimension lead scoring and prioritization</li>
+            <li>• Automatic CRM synchronization with error logging</li>
+            <li>• Agent dashboard for actioning qualified leads</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Agent Dashboard Access -->
+      <div class="bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg p-6 text-white mb-6">
+        <h2 class="text-2xl font-semibold mb-3">Agent Dashboard Access</h2>
+        <p class="mb-4">Access qualified leads, view AI analysis, and perform recommended actions including scheduling follow-ups.</p>
+
+        <div class="bg-white bg-opacity-20 rounded-lg p-4 mb-4">
+          <div class="flex items-center justify-between mb-3">
+            <span class="font-semibold">Dashboard URL:</span>
+            <a href="/static/agent_widget.html" target="_blank" class="bg-white text-purple-600 px-4 py-2 rounded-lg font-semibold hover:bg-opacity-90 transition">Open Dashboard →</a>
+          </div>
+
+          <div class="flex items-center justify-between">
+            <span class="font-semibold">Password:</span>
+            <div class="flex items-center gap-2">
+              <input type="password" id="dashboardPassword" value="sales2025" readonly class="bg-black bg-opacity-30 px-3 py-1 rounded text-white font-mono text-sm" />
+              <button onclick="togglePassword()" class="bg-white bg-opacity-20 hover:bg-opacity-30 px-3 py-1 rounded transition text-sm">View</button>
+            </div>
+          </div>
+        </div>
+
+        <p class="text-sm opacity-90 bg-white bg-opacity-10 rounded p-3">
+          For demonstration purposes, the dashboard is accessible with a simple password. Open the dashboard in a new tab, then interact with the SalesIQ widget below to observe lead qualification and scheduling workflows.
+        </p>
+      </div>
+
+      <!-- GitHub Repository -->
+      <div class="bg-gradient-to-r from-gray-800 to-gray-900 rounded-lg p-6 text-white mb-6 text-center">
+        <h3 class="text-xl font-semibold mb-3">Source Code</h3>
+        <p class="mb-4 text-gray-300">Full implementation is available in the project repository.</p>
+        <a href="https://github.com/shyam-210/Sales_Engine_Backend" target="_blank" class="inline-flex items-center gap-2 bg-white text-gray-900 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition">
+          View repository
+        </a>
+      </div>
+
+      <!-- CRM Integration -->
+      <div class="bg-gradient-to-r from-green-50 to-blue-50 rounded-lg p-6 mb-6 border-2 border-green-200">
+        <h2 class="text-2xl font-semibold text-gray-800 mb-3">CRM Integration</h2>
+        <p class="text-gray-700 mb-4">
+          Qualified leads are synchronized to Zoho CRM via secure OAuth2 authentication. The system records the CRM response, stores the lead identifier, and displays sync status and error details on the agent dashboard.
+        </p>
+
+        <div class="grid md:grid-cols-2 gap-4 mb-4">
+          <div class="bg-white rounded-lg p-4 border border-green-200">
+            <h3 class="font-semibold text-gray-800 mb-2">Auto-Sync Features</h3>
+            <ul class="text-sm text-gray-700 space-y-1">
+              <li>✓ Real-time lead creation in Zoho CRM</li>
+              <li>✓ CRM Lead ID persistence and traceability</li>
+              <li>✓ Sync status (success / failed) and retry logic</li>
+              <li>✓ Error logging for diagnostics</li>
+              <li>✓ Secure token management (OAuth2 refresh)</li>
+            </ul>
+          </div>
+
+          <div class="bg-white rounded-lg p-4 border border-blue-200">
+            <h3 class="font-semibold text-gray-800 mb-2">Dashboard Visibility</h3>
+            <ul class="text-sm text-gray-700 space-y-1">
+              <li>✓ CRM sync status badge</li>
+              <li>✓ Direct link to open the lead in Zoho CRM</li>
+              <li>✓ Sync timestamps and error details</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="bg-white bg-opacity-60 rounded p-3 text-sm text-gray-700">
+          When an agent schedules a follow-up, the appointment is associated with the lead record. This preserves end-to-end traceability between conversational interactions, CRM lead records, and subsequent follow-up actions.
+        </div>
+      </div>
+
+      <!-- Follow-up Scheduling System (INTEGRATED FEATURE) -->
+      <div class="bg-white rounded-lg p-6 mb-6 border-2 border-gray-100">
+        <h2 class="text-2xl font-semibold text-gray-800 mb-3">Follow-up Scheduling System</h2>
+
+        <p class="text-gray-700 mb-3">
+          The Follow-up Scheduling System is an integrated capability that enables agents to convert qualified leads into scheduled sessions directly from the agent dashboard. The workflow is designed to follow the qualification and CRM synchronization steps to preserve context and traceability.
+        </p>
+
+        <div class="grid md:grid-cols-2 gap-4 mb-4">
+          <div class="bg-gradient-to-r from-purple-50 to-blue-50 rounded-lg p-4">
+            <h3 class="font-semibold text-gray-800 mb-2">Scheduling Workflow</h3>
+            <ul class="text-sm text-gray-700 space-y-1">
+              <li>• Trigger scheduling from the agent recommended action.</li>
+              <li>• Capture purpose, date, time, and notes.</li>
+              <li>• Simulated OTP verification and slot selection for demo purposes.</li>
+              <li>• Appointments are associated with the lead and visible in the agent dashboard.</li>
+            </ul>
+          </div>
+
+          <div class="bg-white rounded-lg p-4 border border-gray-200">
+            <h3 class="font-semibold text-gray-800 mb-2">Agent Capabilities</h3>
+            <ul class="text-sm text-gray-700 space-y-1">
+              <li>• Schedule, reschedule, and cancel follow-ups.</li>
+              <li>• Confirmations and status updates are visible in real time.</li>
+              <li>• Local demonstration storage is used for UI demo; can be wired to calendar APIs.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="text-sm text-gray-600 mb-3">
+          For demonstration, the scheduling UI supports a simulated booking flow: choose service, capture visitor details, verify phone, choose slot, and confirm the appointment. This mirrors a production integration where the booking would be persisted to a calendar service (Google Calendar, Appointy, or equivalent).
+        </div>
+
+        <!-- Trigger for the scheduling demo modal -->
+        <div>
+          <button onclick="openAppointmentDemo()" class="px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-semibold hover:scale-105 transition">
+            Launch scheduling workflow
+          </button>
+        </div>
+      </div>
+
+      <!-- Session Info -->
+      <div class="bg-blue-50 border-2 border-blue-200 rounded-lg p-4 mb-6">
+        <h3 class="font-semibold text-gray-800 mb-2">Session Management</h3>
+        <p class="text-sm text-gray-700">
+          Sessions expire after 30 minutes of inactivity. Each visitor is tracked independently and returning visitors are recognized for improved context and scoring.
+        </p>
+      </div>
+
+      <!-- Try It Now -->
+      <div class="text-center bg-gradient-to-r from-green-50 to-blue-50 rounded-lg p-6 mb-6">
+        <h2 class="text-2xl font-semibold text-gray-800 mb-3">Live Interaction</h2>
+        <p class="text-gray-700 mb-4">Interact with the SalesIQ widget below. Use the agent dashboard to observe how leads are qualified and how follow-ups can be scheduled.</p>
+        <div class="flex flex-wrap justify-center gap-2 text-sm">
+          <span class="bg-white px-3 py-1 rounded-full text-gray-700 border border-gray-300">I need a CRM for my team</span>
+          <span class="bg-white px-3 py-1 rounded-full text-gray-700 border border-gray-300">Looking for ERP solutions</span>
+          <span class="bg-white px-3 py-1 rounded-full text-gray-700 border border-gray-300">Tell me about SalesIQ</span>
+        </div>
+      </div>
+
     </div>
 
-    <!-- Zoho SalesIQ Widget -->
-    <script>window.$zoho = window.$zoho || {}; $zoho.salesiq = $zoho.salesiq || { ready: function () { } }</script>
-    <script id="zsiqscript"
-        src="https://salesiq.zohopublic.in/widget?wc=siq8bb483d75c92057447a22914de874bbddf385fefad5f38daef724ab9605eb43e"
-        defer></script>
+    <!-- Footer -->
+    <div class="text-center text-white text-sm opacity-75 mb-4">
+      <p>Sales Intelligence Engine v2.0 • Built with FastAPI, ChatGPT OSS 120B, and Zoho Integration</p>
+    </div>
+  </div>
 
-    <script>
-        function togglePassword() {
-            const passwordInput = document.getElementById('dashboardPassword');
-            const button = event.target;
+  <!-- ===================== APPOINTMENT BOOKING MODAL (INTEGRATED) ===================== -->
+  <div id="appointmentModal" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm hidden z-50 flex items-center justify-center">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg p-6 relative modal-card card">
+      <button onclick="closeAppointmentDemo()" class="absolute top-4 right-4 text-gray-500 hover:text-black text-xl font-bold">×</button>
 
-            if (passwordInput.type === 'password') {
-                passwordInput.type = 'text';
-                button.textContent = 'Hide';
-            } else {
-                passwordInput.type = 'password';
-                button.textContent = 'View';
-            }
-        }
-    </script>
+      <div id="apptSteps" class="flex justify-between mb-6 text-sm text-gray-600">
+        <span id="s1" class="step-active">1. Service</span>
+        <span id="s2">2. Details</span>
+        <span id="s3">3. OTP</span>
+        <span id="s4">4. Slot</span>
+        <span id="s5">5. Confirm</span>
+      </div>
+
+      <div id="apptContent"></div>
+    </div>
+  </div>
+
+  
+  <!-- Appointment flow script -->
+  <script>
+    /* Modal control and steps for the integrated scheduling flow */
+    function openAppointmentDemo() {
+      document.getElementById('appointmentModal').classList.remove('hidden');
+      apptStep1();
+    }
+    function closeAppointmentDemo() {
+      document.getElementById('appointmentModal').classList.add('hidden');
+    }
+
+    function setActive(step) {
+      ['s1','s2','s3','s4','s5'].forEach(id => document.getElementById(id).classList.remove('step-active'));
+      document.getElementById(step).classList.add('step-active');
+    }
+
+    function apptStep1() {
+      setActive('s1');
+      document.getElementById('apptContent').innerHTML = `
+        <h2 class="text-xl font-semibold mb-4 text-gray-800">Select Service</h2>
+        <div class="grid grid-cols-2 gap-4">
+          ${['Consultation','Demo Session','Support Call','Product Training'].map(s => `
+            <div onclick="apptStep2('${s}')" class="p-4 rounded-xl bg-gradient-to-br from-purple-50 to-blue-50 shadow cursor-pointer hover:scale-105 transition">
+              <div class="font-semibold text-gray-800">${s}</div>
+            </div>
+          `).join('')}
+        </div>
+      `;
+    }
+
+    function apptStep2(service) {
+      window.selectedService = service;
+      setActive('s2');
+      document.getElementById('apptContent').innerHTML = `
+        <h2 class="text-xl font-semibold mb-4 text-gray-800">Participant Details</h2>
+        <div class="space-y-3">
+          <input id="u_name" class="w-full px-4 py-2 border rounded-lg" placeholder="Full name" />
+          <input id="u_email" class="w-full px-4 py-2 border rounded-lg" placeholder="Email address" />
+          <input id="u_phone" class="w-full px-4 py-2 border rounded-lg" placeholder="Phone number" />
+          <div class="flex gap-2 mt-3">
+            <button onclick="apptStep3()" class="flex-1 px-4 py-2 bg-purple-600 text-white rounded-lg font-semibold">Continue</button>
+            <button onclick="closeAppointmentDemo()" class="flex-1 px-4 py-2 border rounded-lg">Cancel</button>
+          </div>
+        </div>
+      `;
+    }
+
+    function apptStep3() {
+      setActive('s3');
+      document.getElementById('apptContent').innerHTML = `
+        <h2 class="text-xl font-semibold mb-4 text-gray-800">Phone Verification</h2>
+        <p class="text-sm text-gray-600 mb-3">A verification code has been sent to the provided phone number. Enter the code to proceed.</p>
+        <input id="otp_input" maxlength="6" class="w-full px-4 py-2 border rounded-lg tracking-widest text-center text-xl" placeholder="______" />
+        <div class="flex gap-2 mt-4">
+          <button onclick="apptStep4()" class="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg font-semibold">Verify</button>
+          <button onclick="apptStep2(window.selectedService)" class="flex-1 px-4 py-2 border rounded-lg">Back</button>
+        </div>
+      `;
+    }
+
+    function apptStep4() {
+      setActive('s4');
+      document.getElementById('apptContent').innerHTML = `
+        <h2 class="text-xl font-semibold mb-4 text-gray-800">Available Slots</h2>
+        <p class="text-sm text-gray-600 mb-3">Fetching available slots...</p>
+        <div id="slotLoader" class="grid grid-cols-2 gap-4">
+          ${Array(4).fill().map(()=> `<div class="h-12 bg-gray-200 animate-pulse rounded-lg"></div>`).join('')}
+        </div>
+      `;
+      setTimeout(()=> {
+        document.getElementById('slotLoader').innerHTML = `
+          ${['10:00 AM','11:30 AM','2:00 PM','4:00 PM'].map(t=>`
+            <button onclick="apptStep5('${t}')" class="px-4 py-3 bg-white border rounded-xl shadow hover:bg-purple-50">${t}</button>
+          `).join('')}
+        `;
+      }, 900);
+    }
+
+    function apptStep5(time) {
+      setActive('s5');
+      // retrieve participant details for confirmation
+      const name = document.getElementById('u_name') ? document.getElementById('u_name').value : '';
+      const email = document.getElementById('u_email') ? document.getElementById('u_email').value : '';
+      const phone = document.getElementById('u_phone') ? document.getElementById('u_phone').value : '';
+
+      document.getElementById('apptContent').innerHTML = `
+        <h2 class="text-xl font-semibold mb-4 text-gray-800">Confirmation</h2>
+        <div class="bg-green-50 border border-green-200 p-4 rounded-lg">
+          <div class="text-sm text-gray-700 mb-2"><strong>Service:</strong> ${window.selectedService}</div>
+          <div class="text-sm text-gray-700 mb-2"><strong>Participant:</strong> ${name || 'N/A'} • ${email || 'N/A'}</div>
+          <div class="text-sm text-gray-700 mb-2"><strong>Time:</strong> ${time}</div>
+          <div class="text-sm text-gray-700"><strong>Status:</strong> Confirmed</div>
+        </div>
+        <div class="flex gap-2 mt-6">
+          <button onclick="persistDemoAppointment('${time}')" class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg font-semibold">Save & Close</button>
+          <button onclick="closeAppointmentDemo()" class="flex-1 px-4 py-2 border rounded-lg">Close</button>
+        </div>
+      `;
+    }
+
+    // Demo persistence: store a simple appointment to localStorage so agent dashboard can display it.
+    const DEMO_APPT_KEY = 'sales_engine_demo_appts_v1';
+    function persistDemoAppointment(time) {
+      const name = document.getElementById('u_name') ? document.getElementById('u_name').value : 'Demo Participant';
+      const email = document.getElementById('u_email') ? document.getElementById('u_email').value : '';
+      const phone = document.getElementById('u_phone') ? document.getElementById('u_phone').value : '';
+      const appt = {
+        id: 'demo_' + Math.random().toString(36).slice(2,9),
+        service: window.selectedService || 'Follow-up',
+        participant: name,
+        email, phone,
+        date: (new Date()).toISOString().slice(0,10),
+        time,
+        status: 'Confirmed',
+        notes: ''
+      };
+      try {
+        const raw = localStorage.getItem(DEMO_APPT_KEY);
+        const all = raw ? JSON.parse(raw) : [];
+        all.push(appt);
+        localStorage.setItem(DEMO_APPT_KEY, JSON.stringify(all));
+      } catch(e) { console.warn('persist failed', e); }
+      closeAppointmentDemo();
+      // notify agent page to refresh if it is open in another tab (demo)
+      try { window.dispatchEvent(new Event('demoApptSaved')); } catch(e){}
+      alert('Appointment saved for demonstration.');
+    }
+  </script>
+
+  <!-- Utility -->
+  <script>
+    function togglePassword() {
+      const passwordInput = document.getElementById('dashboardPassword');
+      const button = event.target;
+      if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        button.textContent = 'Hide';
+      } else {
+        passwordInput.type = 'password';
+        button.textContent = 'View';
+      }
+    }
+  </script>
+
+  
+
+
+  <!-- Zoho SalesIQ Widget -->
+  <script>window.$zoho = window.$zoho || {}; $zoho.salesiq = $zoho.salesiq || { ready: function () { } }</script>
+  <script id="zsiqscript"
+    src="https://salesiq.zohopublic.in/widget?wc=siq8bb483d75c92057447a22914de874bbddf385fefad5f38daef724ab9605eb43e"
+    defer></script>
+
 </body>
-
 </html>
