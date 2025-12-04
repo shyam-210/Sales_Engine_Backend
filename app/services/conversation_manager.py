@@ -63,7 +63,7 @@ ALSO IDENTIFY:
 - Which of our products they're interested in (if any)
 - Whether this is on-topic for our business
 
-RESPOND IN JSON:
+RESPOND IN VALID JSON ONLY (no markdown, no code blocks):
 {{
   "intent": "product_inquiry",
   "products_mentioned": ["CRM"],
@@ -77,14 +77,40 @@ RESPOND IN JSON:
                 model=self.groq.model,
                 messages=[{"role": "user", "content": prompt}],
                 temperature=0.3,
-                max_tokens=200
+                max_tokens=200,
+                response_format={"type": "json_object"}  # Force JSON output
             )
             
             import json
-            result = json.loads(response.choices[0].message.content)
-            logger.info(f"Intent detected: {result.get('intent')} (confidence: {result.get('confidence')})")
+            import re
+            
+            content = response.choices[0].message.content.strip()
+            
+            # Remove markdown code blocks if present
+            content = re.sub(r'```json\s*', '', content)
+            content = re.sub(r'```\s*', '', content)
+            content = content.strip()
+            
+            # Try to parse JSON
+            result = json.loads(content)
+            
+            # Validate required fields
+            if "intent" not in result:
+                raise ValueError("Missing 'intent' field in response")
+            
+            logger.info(f"Intent detected: {result.get('intent')} (confidence: {result.get('confidence', 0.5)})")
             return result
             
+        except json.JSONDecodeError as e:
+            logger.error(f"Intent detection JSON parse error: {e}")
+            logger.debug(f"Raw response: {response.choices[0].message.content if 'response' in locals() else 'N/A'}")
+            return {
+                "intent": "product_inquiry",
+                "products_mentioned": [],
+                "confidence": 0.5,
+                "is_on_topic": True,
+                "sentiment": "neutral"
+            }
         except Exception as e:
             logger.error(f"Intent detection failed: {e}")
             return {
@@ -94,6 +120,7 @@ RESPOND IN JSON:
                 "is_on_topic": True,
                 "sentiment": "neutral"
             }
+
     
     def generate_conversational_response(
         self,
@@ -109,6 +136,15 @@ RESPOND IN JSON:
         
         This is the CORE of conversational flow - makes bot feel human.
         """
+        # CRITICAL FIX: Filter out fields that are actually filled
+        actually_missing = [
+            field for field in missing_fields 
+            if not extracted_data.get(field) or extracted_data.get(field) in [None, "", [], {}]
+        ]
+        
+        logger.info(f"Missing fields filtered: {len(missing_fields)} -> {len(actually_missing)}")
+        logger.debug(f"Actually missing: {actually_missing}")
+        
         history_text = "\n".join(conversation_history[-5:]) if conversation_history else ""
         
         # Build context about what we know
@@ -142,7 +178,7 @@ WHAT WE KNOW ABOUT THEM:
 {context}
 
 WHAT WE STILL NEED:
-{', '.join(missing_fields) if missing_fields else 'We have enough info!'}
+{', '.join(actually_missing) if actually_missing else 'We have enough info!'}
 
 YOUR TASK:
 Generate a natural, warm response that:

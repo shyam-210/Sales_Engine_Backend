@@ -14,9 +14,20 @@ EXTRACTION_PROMPT = """You are a data extraction assistant. Extract the followin
 
 Extract these fields:
 - visitor_name: Full name if mentioned (string or null)
-- visitor_email: Email address if mentioned (string or null)
+- visitor_email: Email address if mentioned (string or null) - IMPORTANT: Extract ANY email, even test emails like test@123.com
 - company: Company/organization name (string or null)
 - role: Job title or role (string or null)
+- team_size: Number of people/employees (integer or null)
+- current_solution: Current CRM/software they use (string or null)
+- pain_points: List of problems/challenges mentioned (array of strings)
+- budget_indication: Budget hints like "cheap", "expensive", "$500/month" (string or null)
+- urgency: Time sensitivity like "ASAP", "next month", "exploring" (string or null)
+
+CRITICAL EMAIL EXTRACTION RULES:
+- Extract ANY email address format, even if it looks fake (test@123.com, abc@test.com, etc.)
+- If user provides ANYTHING with @ symbol, extract it as email
+- Don't validate email authenticity, just extract it
+
 Return format:
 {
   "visitor_name": null,
@@ -81,20 +92,29 @@ class DataExtractorService:
     ) -> Dict[str, Any]:
         """
         Merge new extraction with existing data.
-        New data overwrites existing for non-null values.
+        CRITICAL: Preserve existing non-null values.
+        Only update if new value is meaningful (not None, not empty).
         Pain points are accumulated.
         """
         merged = existing.copy()
         
         for key, value in new.items():
             if key == "pain_points":
-                # Accumulate pain points
+                # Accumulate pain points (never lose them)
                 existing_points = set(existing.get("pain_points", []))
                 new_points = set(value or [])
                 merged["pain_points"] = list(existing_points | new_points)
-            elif value is not None:
-                # Overwrite with new non-null value
-                merged[key] = value
+            elif value is not None and value not in ["", [], {}]:
+                # Only update if new value is meaningful
+                # AND (existing is empty OR new value is different)
+                existing_value = existing.get(key)
+                if not existing_value or existing_value in [None, "", [], {}]:
+                    # Existing is empty, use new value
+                    merged[key] = value
+                    logger.debug(f"Merged {key}: {value}")
+                else:
+                    # Existing has value, keep it (don't overwrite!)
+                    logger.debug(f"Preserved existing {key}: {existing_value}")
         
         return merged
     
@@ -281,41 +301,26 @@ Return ONLY the response text, nothing else."""
         """
         Determine if we have enough data to qualify the lead.
         
-        PURE DATA-DRIVEN QUALIFICATION:
-        - If ALL critical fields present (team_size, current_solution, pain_points) 
-          AND 70%+ complete -> QUALIFY IMMEDIATELY
-        - Otherwise -> Continue asking questions
+        LENIENT QUALIFICATION (FIXED):
+        - Must have email (critical for follow-up)
+        - Must have 60%+ completeness
+        - That's it! Don't be too greedy for data.
         
-        No minimum message count - let the data decide!
+        This prevents the bot from asking too many questions.
         """
-        # Check completeness first
-        if completeness < 0.7:
-            logger.info(f"Not ready: Completeness {completeness:.0%} (need 70%+)")
-            return False
-        
-        # Check critical fields
-        has_team_size = data.get("team_size") is not None
-        has_solution = data.get("current_solution") is not None
-        has_pain_points = data.get("pain_points") and len(data.get("pain_points", [])) > 0
+        # Email is CRITICAL - can't qualify without it
         has_email = data.get("visitor_email") is not None
-        
-        all_critical_fields = has_team_size and has_solution and has_pain_points and has_email
-        
-        if not all_critical_fields:
-            missing = []
-            if not has_team_size:
-                missing.append("team_size")
-            if not has_solution:
-                missing.append("current_solution")
-            if not has_pain_points:
-                missing.append("pain_points")
-            if not has_email:
-                missing.append("visitor_email")
-            logger.info(f"Not ready: Missing critical fields: {missing}")
+        if not has_email:
+            logger.info("Not ready: Missing email")
             return False
         
-        # All data present - ready to qualify!
-        logger.info(f"Ready to qualify: All critical data present, {completeness:.0%} complete (took {message_count} messages)")
+        # Check completeness threshold (lowered to 60%)
+        if completeness < 0.6:
+            logger.info(f"Not ready: Completeness {completeness:.0%} (need 60%+)")
+            return False
+        
+        # We have email + 60% completeness - that's enough!
+        logger.info(f"Ready to qualify! Email: {data.get('visitor_email')}, Completeness: {completeness:.0%} (took {message_count} messages)")
         return True
     
     def _empty_extraction(self) -> Dict[str, Any]:
